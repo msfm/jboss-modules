@@ -64,6 +64,7 @@ import org.jboss.modules.maven.MavenResolver;
 import org.jboss.modules.security.FactoryPermissionCollection;
 import org.jboss.modules.security.ModularPermissionFactory;
 import org.jboss.modules.security.PermissionFactory;
+import org.jboss.modules.util.PropertiesValueResolver;
 
 import static org.jboss.modules.xml.XmlPullParser.CDSECT;
 import static org.jboss.modules.xml.XmlPullParser.COMMENT;
@@ -1044,6 +1045,9 @@ public final class ModuleXmlParser {
                     if(conditionBuilder.resolve()) {
                         final ArtifactCoordinates coordinates;
                         try {
+                            if (PropertiesValueResolver.isExpression(name)) {
+                                name = PropertiesValueResolver.replaceProperties(name);
+                            }
                             coordinates = ArtifactCoordinates.fromString(name);
                             final File file = mavenResolver.resolveJarArtifact(coordinates);
                             if (file == null) {
@@ -1116,6 +1120,9 @@ public final class ModuleXmlParser {
                 case END_TAG: {
                     if(conditionBuilder.resolve()) {
                         try {
+                            if (PropertiesValueResolver.isExpression(path)) {
+                                path = PropertiesValueResolver.replaceProperties(path);
+                            }
                             resourceLoader = factory.createResourceLoader(rootPath, path, name);
                         } catch (IOException e) {
                             throw new XmlPullParserException(String.format("Failed to add resource root '%s' at path '%s'", name, path), reader, e);
