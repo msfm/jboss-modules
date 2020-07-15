@@ -139,7 +139,7 @@ public class PropertiesValueResolver {
                             if (val == null && name.startsWith("env."))
                                 val = System.getenv(name.substring(4));
 
-                            if (val != null) {
+                            if (val != null && !val.equals(value)) {
                                 builder.append(val);
                                 resolvedValue = val;
                                 state = ch == '}' ? INITIAL : RESOLVED;
