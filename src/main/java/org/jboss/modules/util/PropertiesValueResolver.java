@@ -113,6 +113,11 @@ public class PropertiesValueResolver {
                             continue;
                         }
                         case ':':
+                            if (nameStart == i) {
+                                // not a default delimiter; same as default case
+                                continue;
+                            }
+                            // else fall into the logic for 'end of key to resolve cases' "," and "}"
                         case '}':
                         case ',': {
                             if (nest > 0) {
