@@ -67,7 +67,6 @@ public class PropertiesValueResolver {
         int start = -1;
         int nest = 0;
         int nameStart = -1;
-        String resolvedValue = null;
         for (int i = 0; i < len; i = value.offsetByCodePoints(i, 1)) {
             final int ch = value.codePointAt(i);
             switch (state) {
@@ -141,7 +140,6 @@ public class PropertiesValueResolver {
 
                             if (val != null && !val.equals(value)) {
                                 builder.append(val);
-                                resolvedValue = val;
                                 state = ch == '}' ? INITIAL : RESOLVED;
                                 continue;
                             } else if (ch == ',') {
@@ -201,9 +199,7 @@ public class PropertiesValueResolver {
             }
             case GOT_OPEN_BRACE: {
                 // We had a reference that was not resolved, throw ISE
-                if (resolvedValue == null)
-                    throw new IllegalStateException("Incomplete expression: " + builder.toString());
-                break;
+                throw new IllegalStateException("Incomplete expression: " + builder.toString());
             }
         }
         return builder.toString();
